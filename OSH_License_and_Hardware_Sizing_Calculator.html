@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSH Essentials &amp; Advanced License &amp; Hardware Sizing Calculator</title>
+<style>
+:root{
+  --artifact-background:#ffffff;--artifact-background-light:#f1f3f6;--artifact-background-mid:#e9ecf1;
+  --artifact-border-light:#e3e6ec;--artifact-border-dark:#cdd2db;--artifact-primary-brand:#3559e6;
+  --artifact-primary-highlight:#0d0f14;--artifact-primary-hover:#2442b8;--artifact-selected:#eaeefc;
+  --artifact-text-primary:#11141a;--artifact-text-secondary:#5c6470;--artifact-text-highlight:#e8eefc;
+  --artifact-positive-background:#e8f6ee;--artifact-positive-text:#11141a;--artifact-positive:#159a6a;
+  --artifact-negative:#dc4c4c;--artifact-warn-bg:#fbf3e2;
+}
+html[data-theme='dark']{
+  --artifact-background:#0a0b0e;--artifact-background-light:#121419;--artifact-background-mid:#181b22;
+  --artifact-border-light:#23262e;--artifact-border-dark:#343844;--artifact-primary-brand:#6a92ff;
+  --artifact-primary-highlight:#f5f7fb;--artifact-primary-hover:#88a8ff;--artifact-selected:#1a2030;
+  --artifact-text-primary:#eef0f4;--artifact-text-secondary:#9aa0ad;--artifact-text-highlight:#14213d;
+  --artifact-positive-background:#0e2a1d;--artifact-positive-text:#c8f5da;--artifact-positive:#46d39a;
+  --artifact-negative:#ff6b6b;--artifact-warn-bg:#25200f;
+}
+*{box-sizing:border-box}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;letter-spacing:-.005em;background:var(--artifact-background);color:var(--artifact-text-primary);margin:0;padding:0}
+.shell{max-width:1100px;margin:0 auto;padding:48px 28px 90px}
+.eyebrow{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:0 0 12px}
+h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin:0 0 14px}
+.sub{color:var(--artifact-text-secondary);max-width:770px;margin:0 0 34px}
+h2{font-size:1.4rem;font-weight:500;margin:0 0 4px}
+.section-tag{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-primary-brand);margin:0 0 6px}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--artifact-background-light);border:1px solid var(--artifact-border-light);border-radius:8px;padding:24px}
+.panel-title{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:0 0 18px;padding-bottom:10px;border-bottom:1px solid var(--artifact-border-light)}
+.field{margin-bottom:18px}
+.field-label{display:block;font-size:14px;font-weight:500;margin-bottom:5px}
+.field-hint{font-size:12.5px;color:var(--artifact-text-secondary);margin:2px 0 8px}
+input[type=number]{width:100%;padding:10px 12px;font-size:15px;font-family:inherit;border:1px solid var(--artifact-border-dark);border-radius:6px;background:var(--artifact-background);color:var(--artifact-text-primary);font-variant-numeric:tabular-nums}
+input[type=number]:focus{outline:none;border-color:var(--artifact-primary-brand)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{flex:1;min-width:72px;padding:9px 8px;font-size:13px;font-family:inherit;font-weight:500;border:1px solid var(--artifact-border-dark);border-radius:6px;background:var(--artifact-background);color:var(--artifact-text-secondary);cursor:pointer;transition:.15s}
+.seg button.active{background:var(--artifact-selected);border-color:var(--artifact-primary-brand);color:var(--artifact-primary-brand)}
+.explainer{border-radius:6px;padding:12px 14px;font-size:13px;border:1px solid var(--artifact-border-light);background:var(--artifact-background);margin-bottom:20px}
+.sub-head{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:22px 0 12px;padding-top:14px;border-top:1px dashed var(--artifact-border-light)}
+.result-hero{background:var(--artifact-text-highlight);border:1px solid var(--artifact-border-light);border-radius:8px;padding:24px;margin-bottom:18px}
+.metric{font-weight:300;font-size:clamp(2.4rem,5.5vw,3.4rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.metric small{font-size:1.05rem;color:var(--artifact-text-secondary);font-weight:400}
+.badge{display:inline-block;font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:var(--artifact-primary-brand);color:#fff;margin-top:8px}
+html[data-theme='dark'] .badge{color:#0a0b0e}
+.grid-out{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.out-card{background:var(--artifact-background);border:1px solid var(--artifact-border-light);border-radius:8px;padding:15px 17px}
+.out-label{font-size:12.5px;color:var(--artifact-text-secondary);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.out-value{font-size:1.4rem;font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.out-value small{font-size:.82rem;color:var(--artifact-text-secondary)}
+.note{font-size:12.5px;color:var(--artifact-text-secondary);margin-top:7px;line-height:1.5}
+.flag{border-radius:6px;padding:11px 14px;font-size:13.5px;margin-top:12px;border:1px solid var(--artifact-border-light)}
+.flag.warn{background:var(--artifact-warn-bg)}
+.flag.pos{background:var(--artifact-positive-background);color:var(--artifact-positive-text)}
+.info{position:relative;display:inline-flex;cursor:help;color:var(--artifact-text-secondary)}
+.info .ico{width:14px;height:14px;border:1px solid var(--artifact-border-dark);border-radius:50%;font-size:10px;line-height:12px;text-align:center;font-family:monospace}
+.info .tip{visibility:hidden;opacity:0;position:absolute;bottom:135%;left:50%;transform:translateX(-50%);width:240px;background:var(--artifact-primary-highlight);color:var(--artifact-background);font-size:12px;line-height:1.45;padding:9px 11px;border-radius:6px;z-index:30;transition:opacity .15s;text-transform:none;letter-spacing:0;font-weight:400}
+.info:hover .tip,.info:focus .tip{visibility:visible;opacity:1}
+.block{margin-top:46px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--artifact-text-secondary);text-align:left;padding:9px 11px;border-bottom:1px solid var(--artifact-border-dark)}
+td{padding:9px 11px;border-bottom:1px solid var(--artifact-border-light);font-variant-numeric:tabular-nums}
+tr.hit td{background:var(--artifact-selected)}
+th.hit,td.hit{background:var(--artifact-selected);color:var(--artifact-primary-brand)}
+.yes{color:var(--artifact-positive);font-weight:600}
+.no{color:var(--artifact-text-secondary)}
+.hw-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:900px){.hw-grid{grid-template-columns:1fr}}
+.hw-card{border:1px solid var(--artifact-border-light);border-radius:8px;padding:20px;background:var(--artifact-background-light)}
+.hw-card h3{font-size:1.15rem;font-weight:500;margin:0 0 2px}
+.hw-card .cap{font-size:12.5px;color:var(--artifact-text-secondary);margin-bottom:14px}
+.grp{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--artifact-primary-brand);margin:16px 0 6px}
+.assump ul{padding-left:18px;color:var(--artifact-text-secondary);font-size:14px}
+.assump li{margin-bottom:8px}
+.assump a{color:var(--artifact-primary-brand)}
+details{margin-top:12px;border:1px solid var(--artifact-border-light);border-radius:6px;padding:10px 14px}
+summary{cursor:pointer;font-weight:500;font-size:14px}
+.foot-note{font-size:12px;color:var(--artifact-text-secondary);margin-top:28px}
+@media print{
+  body{margin:0;padding:.4in .55in;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .shell{max-width:100%!important;width:100%!important}
+  .panel,.out-card,.result-hero,.hw-card{break-inside:avoid;box-shadow:none!important}
+  table,tr{break-inside:avoid}
+  button,[role=button]{display:none!important}
+  .seg button.active{display:inline-block!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <p class="eyebrow">SolarWinds · Solutions Engineering · APJ</p>
+  <h1 data-glean-id="title">OSH Essentials &amp; Advanced License &amp; Hardware Sizing Calculator</h1>
+  <p class="sub" data-glean-id="intro">Size the SolarWinds Observability Self-Hosted (OSH) <strong>Essentials</strong> or <strong>Advanced</strong> tier from monitored node capacity, then derive minimum and recommended self-hosted hardware. Both tiers use simple node-based licensing and scale through Standard and Enterprise editions. Poller sizing follows the 2026 scalability guide — per-poller capacity is protocol-dependent, not a flat element count.</p>
+
+  <div class="layout">
+    <!-- INPUTS -->
+    <div class="panel" data-glean-id="inputs">
+      <p class="panel-title">Licensing inputs</p>
+
+      <div class="field" data-glean-id="in-tier">
+        <label class="field-label">License tier</label>
+        <p class="field-hint">Essentials: NPM, SAM, LA, IPAM, UDT, VNQM &amp; Cloud. Advanced adds NTA, NCM, VMAN, SCM, anomaly-based alerting &amp; the security vulnerability dashboard.</p>
+        <div class="seg" id="seg-tier"><button data-t="essentials">Essentials</button><button data-t="advanced" class="active">Advanced</button></div>
+      </div>
+
+      <div class="explainer" data-glean-id="how-counting">
+        <strong>How licensing counts nodes:</strong> most monitored devices consume one node license each. ICMP-only status nodes (ping availability) are free, and cloud/hypervisor-discovered VMs are free until you assign additional monitoring — then each counts as one full node. Value-based fractional licensing is a Premier-only feature and does not apply to Essentials or Advanced.
+      </div>
+      <div class="field" data-glean-id="in-nodes">
+        <label class="field-label" for="i-nodes">Licensed nodes (1 each)</label>
+        <p class="field-hint">Servers, network devices, wireless controllers, autonomous APs, and any node with monitoring beyond ICMP status. Exclude ICMP-only status nodes (free).</p>
+        <input type="number" id="i-nodes" min="0" value="820">
+      </div>
+      <div class="row2">
+        <div class="field" data-glean-id="in-add"><label class="field-label" for="i-add">Planned additions</label><input type="number" id="i-add" min="0" value="110"></div>
+        <div class="field" data-glean-id="in-headroom"><label class="field-label" for="i-headroom">Growth headroom %</label><input type="number" id="i-headroom" min="0" max="200" value="8"></div>
+      </div>
+      <div class="field" data-glean-id="in-edition">
+        <label class="field-label">Scale edition</label>
+        <p class="field-hint">Standard scales up to 1,500 nodes. Enterprise is required beyond 1,500 nodes and whenever Additional Polling Engines (APEs) are needed.</p>
+        <div class="seg" id="seg-edition"><button data-ed="auto" class="active">Auto</button><button data-ed="standard">Standard</button><button data-ed="enterprise">Enterprise</button></div>
+      </div>
+
+      <p class="sub-head" data-glean-id="hw-osh-head">Self-Hosted (OSH) polling workload</p>
+      <div class="field" data-glean-id="in-proto">
+        <label class="field-label">Primary polling protocol</label>
+        <p class="field-hint">Sets per-poller element capacity: SNMPv2 100k · SNMPv3 72k · WMI/WinRM 20k (max 2,000 nodes), at 16 cores.</p>
+        <div class="seg" id="seg-proto"><button data-p="snmpv2" class="active">SNMPv2</button><button data-p="snmpv3">SNMPv3</button><button data-p="wmi">WMI/WinRM</button></div>
+      </div>
+      <div class="field" data-glean-id="in-epn">
+        <label class="field-label" for="i-epn">Avg monitored elements per node</label>
+        <p class="field-hint">Interfaces, volumes, apps, component monitors per node. Typical 8–12.</p>
+        <input type="number" id="i-epn" min="1" value="10">
+      </div>
+      <div class="row2">
+        <div class="field" data-glean-id="in-components"><label class="field-label" for="i-components">SAM component monitors</label><p class="field-hint">40k / APE.</p><input type="number" id="i-components" min="0" value="0"></div>
+        <div class="field" data-glean-id="in-agents"><label class="field-label" for="i-agents">SolarWinds agents</label><p class="field-hint">1,000 / poller.</p><input type="number" id="i-agents" min="0" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field" data-glean-id="in-fps"><label class="field-label" for="i-fps">NetFlow flows/sec (on-prem)</label><p class="field-hint">50k FPS / poller. Requires Advanced (NTA).</p><input type="number" id="i-fps" min="0" value="0"></div>
+        <div class="field" data-glean-id="in-webusers"><label class="field-label" for="i-webusers">Concurrent web users</label><p class="field-hint">25–50 / web server.</p><input type="number" id="i-webusers" min="0" value="25"></div>
+      </div>
+    </div>
+
+    <!-- OUTPUTS -->
+    <div data-glean-id="outputs">
+      <div class="result-hero" data-glean-id="hero">
+        <div class="out-label">Recommended license tier
+          <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Smallest published node tier covering total required capacity for the selected OSH tier. CPQ rounds up to the next valid tier.</span></span>
+        </div>
+        <div class="metric" id="o-tier">—</div>
+        <span class="badge" id="o-tiername">—</span>
+      </div>
+      <div class="grid-out">
+        <div class="out-card" data-glean-id="o-capacity-card">
+          <div class="out-label">Total required capacity
+            <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Licensed nodes + planned additions, then + growth headroom %.</span></span>
+          </div>
+          <div class="out-value" id="o-capacity">—</div>
+          <div class="note" id="o-capacity-break"></div>
+        </div>
+        <div class="out-card" data-glean-id="o-edition-card">
+          <div class="out-label">Scale edition
+            <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Standard up to 1,500 nodes (includes additional web servers; HA is an add-on). Enterprise required above 1,500 nodes or for APEs; adds APEs, HA, EOC, lab licenses &amp; Advanced Support.</span></span>
+          </div>
+          <div class="out-value" id="o-edition">—</div>
+          <div class="note" id="o-edition-note"></div>
+        </div>
+        <div class="out-card" data-glean-id="o-pollers-card">
+          <div class="out-label">Polling engines required
+            <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Maximum across workload dimensions: elements ÷ protocol capacity, SAM components ÷ 40k, flows ÷ 50k FPS, agents ÷ 1,000, and WMI's 2,000-node cap. APEs require an Enterprise license.</span></span>
+          </div>
+          <div class="out-value" id="o-pollers">—</div>
+          <div class="note" id="o-pollers-note"></div>
+        </div>
+        <div class="out-card" data-glean-id="o-web-card">
+          <div class="out-label">Additional web servers
+            <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">The main server hosts the Web Console for up to ~50 concurrent users; add web servers for more. Included in both Standard and Enterprise.</span></span>
+          </div>
+          <div class="out-value" id="o-web">—</div>
+          <div class="note" id="o-web-note"></div>
+        </div>
+      </div>
+      <div id="o-flags"></div>
+    </div>
+  </div>
+
+  <!-- MODULE COVERAGE -->
+  <div class="block" data-glean-id="module-table">
+    <p class="section-tag">Reference</p>
+    <h2>Module coverage by tier</h2>
+    <p class="note">Selected tier highlighted. Advanced includes everything in Essentials plus the additional capabilities below.</p>
+    <table>
+      <thead><tr><th>Capability</th><th id="th-ess">Essentials</th><th id="th-adv">Advanced</th></tr></thead>
+      <tbody id="module-body"></tbody>
+    </table>
+    <p class="note" style="margin-top:12px">Additional Polling Engines (APEs), Enterprise Operations Console (EOC), and lab licenses require the <strong>Enterprise</strong> edition of either tier. High Availability is available as an add-on on Standard.</p>
+  </div>
+
+  <!-- TIER TABLE -->
+  <div class="block" data-glean-id="tier-table">
+    <p class="section-tag">Reference</p>
+    <h2>Published node tiers</h2>
+    <p class="note">Matching tier highlighted. Standard up to 1,500 nodes; Enterprise from 500 and required beyond 1,500.</p>
+    <table>
+      <thead><tr><th>Edition</th><th>Available node tiers</th></tr></thead>
+      <tbody>
+        <tr id="tr-standard"><td>Standard</td><td id="tiers-standard"></td></tr>
+        <tr id="tr-enterprise"><td>Enterprise</td><td id="tiers-enterprise"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HARDWARE -->
+  <div class="block" data-glean-id="hardware">
+    <p class="section-tag">Hardware sizing</p>
+    <h2>Self-Hosted infrastructure — Minimum vs Recommended</h2>
+    <p class="note" id="hw-summary"></p>
+    <div class="hw-grid">
+      <div class="hw-card" data-glean-id="hw-min">
+        <h3>1 · Minimum hardware</h3>
+        <p class="cap" id="hw-min-cap"></p>
+        <div class="grp">Self-Hosted (OSH)</div>
+        <table><thead><tr><th>Component</th><th>Qty</th><th>CPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody id="hw-min-osh"></tbody></table>
+      </div>
+      <div class="hw-card" data-glean-id="hw-rec">
+        <h3>2 · Recommended hardware</h3>
+        <p class="cap" id="hw-rec-cap"></p>
+        <div class="grp">Self-Hosted (OSH)</div>
+        <table><thead><tr><th>Component</th><th>Qty</th><th>CPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody id="hw-rec-osh"></tbody></table>
+      </div>
+    </div>
+    <p class="note" id="hw-poller-note" style="margin-top:14px"></p>
+  </div>
+
+  <!-- SCALABILITY REFERENCE -->
+  <div class="block" data-glean-id="scal-ref">
+    <p class="section-tag">Reference</p>
+    <h2>Per-poller scalability limits (2026 guide)</h2>
+    <table>
+      <thead><tr><th>Dimension</th><th>Per polling engine</th><th>Per instance</th></tr></thead>
+      <tbody>
+        <tr><td>Elements — SNMPv2</td><td>100,000 (16 cores; +7,500/core → max 150,000)</td><td rowspan="3">1,000,000 elements · 100 APEs</td></tr>
+        <tr><td>Elements — SNMPv3</td><td>72,000 (16 cores; +5,000/core → max 100,000)</td></tr>
+        <tr><td>Elements — WMI/WinRM</td><td>20,000 (max 2,000 nodes; +2,000/core → 30,000)</td></tr>
+        <tr><td>SAM component monitors</td><td>40,000 (APE) · ~10,000 (main)</td><td>550,000</td></tr>
+        <tr><td>NetFlow (NTA) — Advanced</td><td>50,000 flows/sec</td><td>300,000 flows/sec</td></tr>
+        <tr><td>SolarWinds agents</td><td>1,000 (−10 per remote collector)</td><td>—</td></tr>
+        <tr><td>UDT ports</td><td>100,000</td><td>500,000</td></tr>
+        <tr><td>VMAN VMs — Advanced</td><td>10,000 (per APE)</td><td>—</td></tr>
+        <tr><td>Web console users</td><td>25–50 per web server</td><td>50–100 (main)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ASSUMPTIONS -->
+  <div class="block assump" data-glean-id="assumptions">
+    <h2>How this is calculated</h2>
+    <ul>
+      <li>OSH Essentials and Advanced use simple node-based tier licensing. ICMP-only availability nodes are free; a node becomes billable once additional monitoring (apps, interfaces, NCM profiles, or other services) is enabled. Cloud/hypervisor-discovered VMs are free until additional monitoring is assigned, then count as one full node.</li>
+      <li><strong>Essentials</strong> includes NPM, SAM, LA, IPAM, UDT, VNQM and cloud monitoring. <strong>Advanced</strong> adds flow monitoring (NTA), NCM, VMAN, SCM, ML anomaly-based alerting, and the security vulnerability dashboard. WPM, SRM, Incident Response and the attached SWO SaaS (NICO) license are Premier-only and are not included here.</li>
+      <li>Value-based (fractional) licensing and license overages/bursting are Premier-only features and are excluded from this Essentials/Advanced sizing.</li>
+      <li><strong>Scale edition:</strong> Standard includes additional web servers and allows HA as an add-on but does not include APEs. If sizing needs one or more APEs, or capacity exceeds 1,500 nodes, an <strong>Enterprise</strong> license is required. Enterprise also bundles HA, EOC, lab licenses and Advanced Support.</li>
+      <li><strong>Polling engine count</strong> is the maximum across workload dimensions: elements ÷ protocol capacity (SNMPv2 100k / SNMPv3 72k / WMI 20k, at 16 cores), SAM components ÷ 40,000, flows ÷ 50,000 FPS (Advanced only), agents ÷ 1,000, and WMI's 2,000-node cap. Each instance supports up to 100 APEs and 1,000,000 elements.</li>
+      <li>Server hardware tiers (CPU/RAM) follow SolarWinds Platform 2026.2 system requirements; element-heavy pollers need 16 cores to reach the protocol caps, and more cores raise the cap further. Recommended adds a headroom tier plus redundancy: an HA database pair, an extra APE, and an additional web server.</li>
+    </ul>
+    <details>
+      <summary>Sources</summary>
+      <ul style="margin-top:12px">
+        <li><a href="https://documentation.solarwinds.com/en/success_center/orionplatform/content/orion_platform_licensing_model.htm">OSH licensing model</a> — Essentials/Advanced tiers, Standard vs Enterprise editions, ICMP-free nodes, APE requirement.</li>
+        <li><a href="https://documentation.solarwinds.com/en/success_center/orionplatform/content/orion_platform_scalability_engine_guidelines.htm">Scalability engine guidelines (2026)</a> — per-poller SNMPv2/v3/WMI, SAM, flows, agents, per-instance limits.</li>
+        <li><a href="https://documentation.solarwinds.com/en/success_center/orionplatform/content/system_requirements/solarwinds_platform_2026-2_system_requirements.htm">SolarWinds Platform 2026.2 system requirements</a> — server/DB/APE/web CPU-RAM specs.</li>
+      </ul>
+    </details>
+  </div>
+
+  <p class="foot-note">Indicative SE sizing estimate for OSH Essentials and Advanced. Licensing, module coverage, protocol mix and final hardware must be validated in CPQ and against the customer's live license report and current 2026 system-requirements / scalability documentation before quoting.</p>
+</div>
+
+<script>
+var STANDARD_TIERS=[25,50,100,250,500,750,1000,1250,1500];
+var ENTERPRISE_TIERS=[500,750,1000,1250,1500,1750,2000,2250,2500,3000,4000,5000,6000,7000,7500,8000,9000,10000,12500,15000,20000,25000,30000,35000,40000,45000,50000];
+var PROTO_CAP={snmpv2:100000, snmpv3:72000, wmi:20000};
+var PROTO_LABEL={snmpv2:'SNMPv2 (100k/poller)', snmpv3:'SNMPv3 (72k/poller)', wmi:'WMI/WinRM (20k/poller)'};
+var SAM_PER_POLLER=40000, FPS_PER_POLLER=50000, AGENTS_PER_POLLER=1000, WMI_NODES_PER_POLLER=2000;
+var state={tier:'advanced', edition:'auto', proto:'snmpv2'};
+
+var MODULES=[
+ ['Network performance monitoring (NPM)',1,1],
+ ['Server & application management (SAM)',1,1],
+ ['Log monitoring & analysis (LA)',1,1],
+ ['IP address management (IPAM)',1,1],
+ ['User & device tracking (UDT)',1,1],
+ ['VoIP & network quality (VNQM)',1,1],
+ ['Cloud monitoring',1,1],
+ ['Additional web servers',1,1],
+ ['ML anomaly-based alerting',0,1],
+ ['Security vulnerability dashboard',0,1],
+ ['Flow monitoring & analysis (NTA)',0,1],
+ ['Network config management (NCM)',0,1],
+ ['Virtualization management (VMAN)',0,1],
+ ['Server config management (SCM)',0,1]
+];
+
+// SolarWinds Platform 2026.2 specs; poller bumped to 16 cores at large/xl to reach protocol caps
+var SPECS={
+  small: {poller:{c:'4',r:16,d:'100 GB SSD'},  db:{c:'4',r:16,d:'100 GB SSD'},         web:{c:'4',r:16,d:'100 GB SSD'}},
+  medium:{poller:{c:'8',r:32,d:'100 GB SSD'},  db:{c:'8',r:32,d:'100 GB SSD'},         web:{c:'4',r:16,d:'100 GB SSD'}},
+  large: {poller:{c:'16',r:32,d:'100 GB SSD'}, db:{c:'8–16',r:'64–128',d:'100–400 GB SSD'}, web:{c:'10',r:32,d:'100 GB SSD'}},
+  xl:    {poller:{c:'16–24',r:64,d:'150 GB SSD'}, db:{c:'32',r:'256–512',d:'2 TB SSD'},  web:{c:'10',r:32,d:'100 GB SSD'}}
+};
+var ORDER=['small','medium','large','xl'];
+function nextTier(s){var i=ORDER.indexOf(s);return ORDER[Math.min(i+1,ORDER.length-1)];}
+function classify(el){if(el<=500)return 'small';if(el<=2000)return 'medium';if(el<=25000)return 'large';return 'xl';}
+var LABEL={small:'Small',medium:'Medium',large:'Large',xl:'Extra Large'};
+
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function val(id){return parseFloat(document.getElementById(id).value)||0;}
+function bind(segId,key,attr){var seg=document.getElementById(segId);seg.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){seg.querySelectorAll('button').forEach(function(x){x.classList.remove('active');});b.classList.add('active');state[key]=b.dataset[attr];calc();});});}
+function pickTier(cap,tiers){for(var i=0;i<tiers.length;i++){if(tiers[i]>=cap)return tiers[i];}return null;}
+function renderTierRow(elId,tiers,hit){document.getElementById(elId).innerHTML=tiers.map(function(t){return t===hit?'<strong style="color:var(--artifact-primary-brand)">'+fmt(t)+'</strong>':fmt(t);}).join(' · ');}
+function row(name,qty,spec,note){var id='hw-'+name.toLowerCase().replace(/[^a-z0-9]+/g,'-');if(qty<=0)return '';return '<tr data-glean-id="'+id+'"><td>'+name+(note?' <span style="color:var(--artifact-text-secondary)">'+note+'</span>':'')+'</td><td>'+qty+'</td><td>'+spec.c+'</td><td>'+spec.r+' GB</td><td>'+spec.d+'</td></tr>';}
+
+function renderModules(){
+  var essHit=state.tier==='essentials', advHit=state.tier==='advanced';
+  document.getElementById('th-ess').className=essHit?'hit':'';
+  document.getElementById('th-adv').className=advHit?'hit':'';
+  document.getElementById('module-body').innerHTML=MODULES.map(function(m){
+    var e=m[1]?'<span class="yes">✓</span>':'<span class="no">—</span>';
+    var a=m[2]?'<span class="yes">✓</span>':'<span class="no">—</span>';
+    return '<tr><td>'+m[0]+'</td><td class="'+(essHit?'hit':'')+'">'+e+'</td><td class="'+(advHit?'hit':'')+'">'+a+'</td></tr>';
+  }).join('');
+}
+
+function renderHardware(cap,pollers,apeCount,users,edition){
+  var epn=Math.max(1,val('i-epn'));
+  var elements=Math.round(cap*epn);
+  var size=classify(elements), recSize=nextTier(size);
+  var sMin=SPECS[size], sRec=SPECS[recSize];
+
+  document.getElementById('hw-summary').textContent='~'+fmt(elements)+' elements ('+fmt(cap)+' nodes × '+epn+') via '+PROTO_LABEL[state.proto]+' → '+LABEL[size]+' deployment · '+pollers+' polling engine'+(pollers>1?'s':'')+' (1 main + '+apeCount+' APE).';
+  document.getElementById('hw-min-cap').textContent=LABEL[size]+' tier · documented minimum spec';
+  document.getElementById('hw-rec-cap').textContent=LABEL[recSize]+'-tier spec · +HA & redundancy headroom';
+
+  var webMin=Math.max(0,Math.ceil(users/50)-1);
+  var webRec=Math.max(users>0?1:0,Math.ceil(users/25)-1,webMin);
+  var apeNote=edition==='Enterprise'?PROTO_LABEL[state.proto].split(' ')[0]+' capacity':'requires Enterprise license';
+
+  var mo='';
+  mo+=row('Main polling server',1,sMin.poller,'Web Console + main poller');
+  if(apeCount>0) mo+=row('Additional Polling Engine',apeCount,sMin.poller,apeNote);
+  mo+=row('Database server',1,sMin.db,'');
+  if(webMin>0) mo+=row('Additional Web Server',webMin,sMin.web,'25–50 users each');
+  document.getElementById('hw-min-osh').innerHTML=mo;
+
+  var apeRec=apeCount>0?apeCount+1:apeCount;
+  var ro='';
+  ro+=row('Main polling server',1,sRec.poller,'Web Console + main poller');
+  if(apeRec>0) ro+=row('Additional Polling Engine',apeRec,sRec.poller,'+1 redundancy');
+  ro+=row('Database server',2,sRec.db,'HA pair');
+  ro+=row('Additional Web Server',Math.max(webRec,1),sRec.web,'HA / ~25 users each');
+  document.getElementById('hw-rec-osh').innerHTML=ro;
+
+  return {webMin:webMin,webRec:webRec};
+}
+
+function calc(){
+  var nodes=val('i-nodes'), add=val('i-add'), headroom=val('i-headroom');
+  var cap=Math.ceil((nodes+add)*(1+headroom/100));
+
+  var epn=Math.max(1,val('i-epn'));
+  var elements=Math.round(cap*epn);
+  var components=val('i-components'), agents=val('i-agents'), users=val('i-webusers');
+  var fpsInput=val('i-fps');
+  var ntaActive=(state.tier==='advanced');
+  var fps=ntaActive?fpsInput:0;
+  var protoCap=PROTO_CAP[state.proto];
+  var totalNodes=nodes+add;
+
+  var dEl=Math.ceil(elements/protoCap);
+  var dSam=Math.ceil(components/SAM_PER_POLLER);
+  var dFps=Math.ceil(fps/FPS_PER_POLLER);
+  var dAg=Math.ceil(agents/AGENTS_PER_POLLER);
+  var dWmi=state.proto==='wmi'?Math.ceil(totalNodes/WMI_NODES_PER_POLLER):0;
+  var pollers=Math.max(1,dEl,dSam,dFps,dAg,dWmi);
+  var apeCount=Math.max(0,pollers-1);
+  var apeNeeded=apeCount>0;
+
+  var mustEnterprise=(cap>1500||apeNeeded);
+  var stdForced=(state.edition==='standard'&&mustEnterprise);
+  var edition;
+  if(state.edition==='enterprise')edition='Enterprise';
+  else if(state.edition==='standard')edition=mustEnterprise?'Enterprise':'Standard';
+  else edition=mustEnterprise?'Enterprise':'Standard';
+
+  var tiers=edition==='Enterprise'?ENTERPRISE_TIERS:STANDARD_TIERS;
+  var tier=pickTier(cap,tiers);
+  if(tier===null){edition='Enterprise';tiers=ENTERPRISE_TIERS;tier=pickTier(cap,tiers);}
+
+  var tierName=state.tier==='essentials'?'Essentials':'Advanced';
+
+  document.getElementById('o-tier').innerHTML=tier?fmt(tier)+' <small>nodes</small>':'Above listed tiers';
+  document.getElementById('o-tiername').textContent='OSH '+tierName+' · '+edition;
+
+  document.getElementById('o-capacity').innerHTML=fmt(cap)+' <small>nodes</small>';
+  var bp=[fmt(nodes)+' licensed'];
+  if(add>0)bp.push(fmt(add)+' additions');
+  if(headroom>0)bp.push('+'+headroom+'% headroom');
+  document.getElementById('o-capacity-break').textContent=bp.join(' · ');
+
+  document.getElementById('o-edition').textContent=edition;
+  document.getElementById('o-edition-note').textContent=edition==='Enterprise'?'Includes APEs, HA, EOC, lab licenses & Advanced Support':'Includes additional web servers; HA available as add-on';
+
+  document.getElementById('o-pollers').innerHTML=pollers+' <small>engine'+(pollers>1?'s':'')+'</small>';
+  document.getElementById('o-pollers-note').textContent='1 main + '+apeCount+' APE'+(apeCount===1?'':'s');
+
+  var hw=renderHardware(cap,pollers,apeCount,users,edition);
+  var totalWeb=1+hw.webMin;
+  document.getElementById('o-web').innerHTML=totalWeb+' <small>total</small>';
+  document.getElementById('o-web-note').textContent=hw.webMin>0?('main + '+hw.webMin+' additional web server'+(hw.webMin>1?'s':'')):'main server handles '+(users||0)+' users';
+
+  var flags=[];
+  if(stdForced)flags.push({t:'warn',m:'Standard edition is not possible '+(cap>1500?'above 1,500 nodes':'when APEs are required')+' — escalated to Enterprise.'});
+  else if(cap>1500)flags.push({t:'warn',m:'Above 1,500 nodes — Enterprise edition is mandatory.'});
+  if(apeNeeded&&edition==='Enterprise')flags.push({t:'warn',m:'Sizing requires '+apeCount+' Additional Polling Engine'+(apeCount>1?'s':'')+' — APEs are only available with an Enterprise license.'});
+  if(state.tier==='essentials'&&fpsInput>0)flags.push({t:'warn',m:'Flow monitoring (NTA) requires the Advanced tier — flows were not counted for Essentials sizing.'});
+  if(state.proto==='wmi'&&totalNodes>2000)flags.push({t:'warn',m:'WMI/WinRM caps at 2,000 nodes per poller — multiple pollers required.'});
+  if(tier&&(tier-cap)>tier*0.2)flags.push({t:'pos',m:'Comfortable buffer: tier ('+fmt(tier)+') sits well above required capacity ('+fmt(cap)+').'});
+  document.getElementById('o-flags').innerHTML=flags.map(function(f){return '<div class="flag '+f.t+'">'+f.m+'</div>';}).join('');
+
+  renderTierRow('tiers-standard',STANDARD_TIERS,edition==='Standard'?tier:null);
+  renderTierRow('tiers-enterprise',ENTERPRISE_TIERS.slice(0,12),edition==='Enterprise'?tier:null);
+  document.getElementById('tr-standard').classList.toggle('hit',edition==='Standard');
+  document.getElementById('tr-enterprise').classList.toggle('hit',edition==='Enterprise');
+
+  document.getElementById('hw-poller-note').innerHTML='Poller count is the maximum across workload dimensions. CPU = cores · RAM in GB. Element-heavy pollers need 16 cores to reach the protocol cap; adding cores raises it (SNMPv2 →150k, SNMPv3 →100k). Additional Polling Engines require an Enterprise license.';
+
+  renderModules();
+}
+
+['i-nodes','i-add','i-headroom','i-epn','i-components','i-agents','i-fps','i-webusers'].forEach(function(id){var el=document.getElementById(id);el.addEventListener('input',calc);el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();calc();}});});
+bind('seg-tier','tier','t');bind('seg-edition','edition','ed');bind('seg-proto','proto','p');
+calc();
+
+window.GleanBridge&&window.GleanBridge.postMessage({actionId:'export-pdf',type:'glean-add-menu',metadata:{label:'Export as PDF',icon:'export'}});
+window.GleanBridge&&window.GleanBridge.onMessage('action',function(data){if(data.actionId==='export-pdf')window.print();});
+</script>
+</body>
+</html>
