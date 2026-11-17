@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SolarWinds License &amp; Hardware Sizing Calculators</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,300..700&display=swap" rel="stylesheet">
 <style>
 :root{
   --artifact-background:#ffffff;--artifact-background-light:#f1f3f6;--artifact-background-mid:#e9ecf1;
@@ -22,7 +25,7 @@ html[data-theme='dark']{
   --artifact-negative:#ff6b6b;--artifact-warn-bg:#25200f;
 }
 *{box-sizing:border-box}
-body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;letter-spacing:-.005em;background:var(--artifact-background);color:var(--artifact-text-primary);margin:0;padding:0}
+body{font-family:"Google Sans Flex","Google Sans","Product Sans","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;letter-spacing:-.005em;background:var(--artifact-background);color:var(--artifact-text-primary);margin:0;padding:0}
 .shell{max-width:1100px;margin:0 auto;padding:48px 28px 90px}
 .eyebrow{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:0 0 12px}
 h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin:0 0 14px}
@@ -99,8 +102,12 @@ summary{cursor:pointer;font-weight:500;font-size:14px}
 tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);background:var(--artifact-background-light)}
 /* --- merged from Premier calculator --- */
 .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+/* --- brand block --- */
+.brand{display:flex;flex-direction:column;justify-content:center;margin-right:auto;padding-right:16px;line-height:1.25}
+.brand-title{font-weight:600;font-size:15px;letter-spacing:-.01em;color:var(--artifact-text-primary)}
+.brand-sub{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--artifact-text-secondary)}
 /* --- tab navigation --- */
-.tab-bar{position:sticky;top:0;z-index:50;background:var(--artifact-background);border-bottom:1px solid var(--artifact-border-light);display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;margin:0 auto;padding:14px 28px}
+.tab-bar{position:sticky;top:0;z-index:50;align-items:center;background:var(--artifact-background);border-bottom:1px solid var(--artifact-border-light);display:flex;gap:8px;flex-wrap:wrap;max-width:1100px;margin:0 auto;padding:14px 28px}
 .tab-btn{padding:9px 16px;font-size:13.5px;font-family:inherit;font-weight:500;border:1px solid var(--artifact-border-dark);border-radius:6px;background:var(--artifact-background);color:var(--artifact-text-secondary);cursor:pointer;transition:.15s}
 .tab-btn.active{background:var(--artifact-selected);border-color:var(--artifact-primary-brand);color:var(--artifact-primary-brand)}
 .tab-panel{display:none}
@@ -110,14 +117,19 @@ tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);bac
 </head>
 <body>
 <nav class="tab-bar" aria-label="Calculator selector">
+<div class="brand">
+  <span class="brand-title">SolarWinds Sizing</span>
+  <span class="brand-sub">by Westcon ID Team</span>
+</div>
 <button class="tab-btn active" data-tab="sw">SWO SaaS</button>
 <button class="tab-btn" data-tab="ea">OSH Essentials & Advanced</button>
 <button class="tab-btn" data-tab="pr">OSH Premier</button>
+<button class="tab-btn" data-tab="contact">Contact</button>
 </nav>
 <section class="tab-panel active" id="panel-sw">
 <div class="shell">
   <p class="eyebrow">SolarWinds · Solutions Engineering · APJ</p>
-  <h1 data-glean-id="title">SolarWinds Observability SaaS — License &amp; Sizing Calculator</h1>
+  <h1 data-glean-id="title">SolarWinds Observability SaaS<br>License &amp; Sizing Calculator</h1>
   <p class="sub" data-glean-id="intro">Size a full-stack SolarWinds Observability SaaS subscription across all modules — Network, Infrastructure, Application (APM), Database, Digital Experience (Synthetics &amp; RUM), and Logs — using the à-la-carte, entity/consumption-based model. This calculator returns <strong>licensable quantities only</strong> (no pricing). Because the SaaS backend is hosted by SolarWinds, the only customer-side "hardware" to size is the collectors and agents that ship telemetry to the cloud.</p>
 
   <div class="layout">
@@ -302,7 +314,7 @@ tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);bac
 <section class="tab-panel" id="panel-ea">
 <div class="shell">
   <p class="eyebrow">SolarWinds · Solutions Engineering · APJ</p>
-  <h1 data-glean-id="title">OSH Essentials &amp; Advanced License &amp; Hardware Sizing Calculator</h1>
+  <h1 data-glean-id="title">OSH Essentials &amp; Advanced<br>License &amp; Hardware Sizing Calculator</h1>
   <p class="sub" data-glean-id="intro">Size the SolarWinds Observability Self-Hosted (OSH) <strong>Essentials</strong> or <strong>Advanced</strong> tier from monitored node capacity, then derive minimum and recommended self-hosted hardware. Both tiers use simple node-based licensing and scale through Standard and Enterprise editions. Poller sizing follows the 2026 scalability guide — per-poller capacity is protocol-dependent, not a flat element count.</p>
 
   <div class="layout">
@@ -494,7 +506,7 @@ tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);bac
 <section class="tab-panel" id="panel-pr">
 <div class="shell">
   <p class="eyebrow">SolarWinds · Solutions Engineering · APJ</p>
-  <h1 data-glean-id="title">OSH Premier License &amp; Hardware Sizing Calculator</h1>
+  <h1 data-glean-id="title">OSH Premier<br>License &amp; Hardware Sizing Calculator</h1>
   <p class="sub" data-glean-id="intro">Size the SolarWinds Observability Self-Hosted (OSH) Premier tier from monitored capacity, then derive minimum and recommended hardware for the self-hosted platform and the SaaS side (network collectors and per-host agents). Poller sizing follows the 2026 scalability guide — per-poller capacity is protocol-dependent, not a flat element count.</p>
 
   <div class="layout">
@@ -724,6 +736,26 @@ tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);bac
   <p class="foot-note">Indicative SE sizing estimate. Pricing, value-based licensing weights, protocol mix, and final hardware must be validated in CPQ and against the customer's live license report and current 2026 system-requirements / scalability documentation before quoting.</p>
 </div>
 </section>
+<section class="tab-panel" id="panel-contact">
+<div class="shell">
+  <p class="eyebrow">SolarWinds Sizing &middot; by Westcon ID Team</p>
+  <h1>Contact</h1>
+  <p class="sub">Reach out to the Westcon team for licensing validation, CPQ quotes, and sizing reviews.</p>
+  <div class="grid-out" style="max-width:760px">
+    <div class="out-card">
+      <div class="out-label">Product Manager</div>
+      <div class="out-value">Vera Pratiwi</div>
+      <div class="note"><a href="mailto:Vera.Pratiwi@westcon.com" style="color:var(--artifact-primary-brand)">Vera.Pratiwi@westcon.com</a></div>
+    </div>
+    <div class="out-card">
+      <div class="out-label">Sales Engineer</div>
+      <div class="out-value">Teguh P. Mulyo</div>
+      <div class="note"><a href="mailto:teguh.mulyo@westcon.com" style="color:var(--artifact-primary-brand)">teguh.mulyo@westcon.com</a></div>
+    </div>
+  </div>
+</div>
+</section>
+
 <script>
 (function(){
 function $id(x){return document.getElementById('sw-'+x);}
