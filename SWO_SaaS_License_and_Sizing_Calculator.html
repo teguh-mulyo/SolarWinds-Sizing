@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolarWinds Observability SaaS License &amp; Sizing Calculator</title>
+<style>
+:root{
+  --artifact-background:#ffffff;--artifact-background-light:#f1f3f6;--artifact-background-mid:#e9ecf1;
+  --artifact-border-light:#e3e6ec;--artifact-border-dark:#cdd2db;--artifact-primary-brand:#3559e6;
+  --artifact-primary-highlight:#0d0f14;--artifact-primary-hover:#2442b8;--artifact-selected:#eaeefc;
+  --artifact-text-primary:#11141a;--artifact-text-secondary:#5c6470;--artifact-text-highlight:#e8eefc;
+  --artifact-positive-background:#e8f6ee;--artifact-positive-text:#11141a;--artifact-positive:#159a6a;
+  --artifact-negative:#dc4c4c;--artifact-warn-bg:#fbf3e2;
+}
+html[data-theme='dark']{
+  --artifact-background:#0a0b0e;--artifact-background-light:#121419;--artifact-background-mid:#181b22;
+  --artifact-border-light:#23262e;--artifact-border-dark:#343844;--artifact-primary-brand:#6a92ff;
+  --artifact-primary-highlight:#f5f7fb;--artifact-primary-hover:#88a8ff;--artifact-selected:#1a2030;
+  --artifact-text-primary:#eef0f4;--artifact-text-secondary:#9aa0ad;--artifact-text-highlight:#14213d;
+  --artifact-positive-background:#0e2a1d;--artifact-positive-text:#c8f5da;--artifact-positive:#46d39a;
+  --artifact-negative:#ff6b6b;--artifact-warn-bg:#25200f;
+}
+*{box-sizing:border-box}
+body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.6;letter-spacing:-.005em;background:var(--artifact-background);color:var(--artifact-text-primary);margin:0;padding:0}
+.shell{max-width:1100px;margin:0 auto;padding:48px 28px 90px}
+.eyebrow{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:0 0 12px}
+h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin:0 0 14px}
+.sub{color:var(--artifact-text-secondary);max-width:780px;margin:0 0 34px}
+h2{font-size:1.4rem;font-weight:500;margin:0 0 4px}
+.section-tag{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-primary-brand);margin:0 0 6px}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--artifact-background-light);border:1px solid var(--artifact-border-light);border-radius:8px;padding:24px}
+.panel-title{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--artifact-text-secondary);margin:0 0 18px;padding-bottom:10px;border-bottom:1px solid var(--artifact-border-light)}
+.field{margin-bottom:16px}
+.field-label{display:block;font-size:14px;font-weight:500;margin-bottom:5px}
+.field-hint{font-size:12.5px;color:var(--artifact-text-secondary);margin:2px 0 8px}
+.checkbox-field .check{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:500;cursor:pointer;margin-bottom:4px}
+.checkbox-field input[type=checkbox]{width:17px;height:17px;accent-color:var(--artifact-primary-brand);cursor:pointer}
+#uptime-preview{font-size:13px;font-weight:500}
+input[type=number]{width:100%;padding:10px 12px;font-size:15px;font-family:inherit;border:1px solid var(--artifact-border-dark);border-radius:6px;background:var(--artifact-background);color:var(--artifact-text-primary);font-variant-numeric:tabular-nums}
+input[type=number]:focus{outline:none;border-color:var(--artifact-primary-brand)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.explainer{border-radius:6px;padding:12px 14px;font-size:13px;border:1px solid var(--artifact-border-light);background:var(--artifact-background);margin-bottom:20px}
+.sub-head{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--artifact-primary-brand);margin:22px 0 12px;padding-top:14px;border-top:1px dashed var(--artifact-border-light)}
+.result-hero{background:var(--artifact-text-highlight);border:1px solid var(--artifact-border-light);border-radius:8px;padding:24px;margin-bottom:18px}
+.metric{font-weight:300;font-size:clamp(2.2rem,5vw,3.2rem);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:6px 0 2px}
+.metric small{font-size:1.05rem;color:var(--artifact-text-secondary);font-weight:400}
+.badge{display:inline-block;font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:4px;background:var(--artifact-primary-brand);color:#fff;margin-top:8px}
+html[data-theme='dark'] .badge{color:#0a0b0e}
+.grid-out{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.out-card{background:var(--artifact-background);border:1px solid var(--artifact-border-light);border-radius:8px;padding:15px 17px}
+.out-label{font-size:12.5px;color:var(--artifact-text-secondary);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.out-value{font-size:1.35rem;font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.out-value small{font-size:.82rem;color:var(--artifact-text-secondary)}
+.note{font-size:12.5px;color:var(--artifact-text-secondary);margin-top:7px;line-height:1.5}
+.flag{border-radius:6px;padding:11px 14px;font-size:13.5px;margin-top:12px;border:1px solid var(--artifact-border-light)}
+.flag.warn{background:var(--artifact-warn-bg)}
+.flag.pos{background:var(--artifact-positive-background);color:var(--artifact-positive-text)}
+.info{position:relative;display:inline-flex;cursor:help;color:var(--artifact-text-secondary)}
+.info .ico{width:14px;height:14px;border:1px solid var(--artifact-border-dark);border-radius:50%;font-size:10px;line-height:12px;text-align:center;font-family:monospace}
+.info .tip{visibility:hidden;opacity:0;position:absolute;bottom:135%;left:50%;transform:translateX(-50%);width:240px;background:var(--artifact-primary-highlight);color:var(--artifact-background);font-size:12px;line-height:1.45;padding:9px 11px;border-radius:6px;z-index:30;transition:opacity .15s;text-transform:none;letter-spacing:0;font-weight:400}
+.info:hover .tip,.info:focus .tip{visibility:visible;opacity:1}
+.block{margin-top:46px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:"SF Mono","IBM Plex Mono","Consolas",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--artifact-text-secondary);text-align:left;padding:9px 11px;border-bottom:1px solid var(--artifact-border-dark)}
+td{padding:9px 11px;border-bottom:1px solid var(--artifact-border-light);font-variant-numeric:tabular-nums}
+tr.total td{font-weight:600;border-top:2px solid var(--artifact-border-dark);background:var(--artifact-background-light)}
+.hw-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:900px){.hw-grid{grid-template-columns:1fr}}
+.hw-card{border:1px solid var(--artifact-border-light);border-radius:8px;padding:20px;background:var(--artifact-background-light)}
+.hw-card h3{font-size:1.15rem;font-weight:500;margin:0 0 2px}
+.hw-card .cap{font-size:12.5px;color:var(--artifact-text-secondary);margin-bottom:14px}
+.assump ul{padding-left:18px;color:var(--artifact-text-secondary);font-size:14px}
+.assump li{margin-bottom:8px}
+.assump a{color:var(--artifact-primary-brand)}
+details{margin-top:12px;border:1px solid var(--artifact-border-light);border-radius:6px;padding:10px 14px}
+summary{cursor:pointer;font-weight:500;font-size:14px}
+.foot-note{font-size:12px;color:var(--artifact-text-secondary);margin-top:28px}
+@media print{
+  body{margin:0;padding:.4in .55in;background:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .shell{max-width:100%!important;width:100%!important}
+  .panel,.out-card,.result-hero,.hw-card{break-inside:avoid;box-shadow:none!important}
+  table,tr{break-inside:avoid}
+  button,[role=button]{display:none!important}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <p class="eyebrow">SolarWinds · Solutions Engineering · APJ</p>
+  <h1 data-glean-id="title">SolarWinds Observability SaaS — License &amp; Sizing Calculator</h1>
+  <p class="sub" data-glean-id="intro">Size a full-stack SolarWinds Observability SaaS subscription across all modules — Network, Infrastructure, Application (APM), Database, Digital Experience (Synthetics &amp; RUM), and Logs — using the à-la-carte, entity/consumption-based model. This calculator returns <strong>licensable quantities only</strong> (no pricing). Because the SaaS backend is hosted by SolarWinds, the only customer-side "hardware" to size is the collectors and agents that ship telemetry to the cloud.</p>
+
+  <div class="layout">
+    <!-- INPUTS -->
+    <div class="panel" data-glean-id="inputs">
+      <p class="panel-title">Monitoring scope (entities)</p>
+      <div class="explainer" data-glean-id="how-counting">
+        <strong>How SaaS licensing counts things:</strong> each module is licensed separately by the number of active entities (or consumption) monitored in the previous calendar day. Smaller resources share an entitlement — VMs 3:1, cloud services 3:1, containers &amp; wireless APs 10:1. ICMP-only status nodes are included free.
+      </div>
+
+      <p class="sub-head">Network &amp; Infrastructure Observability</p>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-netdev">Network devices</label><p class="field-hint">Routers, switches, firewalls (1:1).</p><input type="number" id="i-netdev" min="0" value="300"></div>
+        <div class="field"><label class="field-label" for="i-aps">Wireless APs</label><p class="field-hint">10 share 1 entitlement.</p><input type="number" id="i-aps" min="0" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-hosts">Hosts / servers</label><p class="field-hint">Agent or collector (1:1).</p><input type="number" id="i-hosts" min="0" value="200"></div>
+        <div class="field"><label class="field-label" for="i-hv">Hypervisors / virtual hosts</label><p class="field-hint">VMware/Hyper-V/Nutanix host (1:1).</p><input type="number" id="i-hv" min="0" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-vms">Standalone VMs</label><p class="field-hint">3 share 1 entitlement.</p><input type="number" id="i-vms" min="0" value="0"></div>
+        <div class="field"><label class="field-label" for="i-cloud">Cloud services (non-host)</label><p class="field-hint">AWS/Azure services, 3:1.</p><input type="number" id="i-cloud" min="0" value="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-containers">Kubernetes containers</label><p class="field-hint">10 share 1 entitlement.</p><input type="number" id="i-containers" min="0" value="0"></div>
+        <div class="field"><label class="field-label" for="i-storage">Storage arrays</label><p class="field-hint">1:1.</p><input type="number" id="i-storage" min="0" value="0"></div>
+      </div>
+      <div class="field"><label class="field-label" for="i-flows">NetFlow flows/sec (optional)</label><p class="field-hint">Drives dedicated flow collector sizing (≤40,000 FPS each).</p><input type="number" id="i-flows" min="0" value="0"></div>
+
+      <p class="sub-head">Applications &amp; Databases</p>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-apm">APM services</label><p class="field-hint">Per active service, any # instances.</p><input type="number" id="i-apm" min="0" value="0"></div>
+        <div class="field"><label class="field-label" for="i-db">Database instances</label><p class="field-hint">Per active instance.</p><input type="number" id="i-db" min="0" value="0"></div>
+      </div>
+
+      <p class="sub-head">Digital Experience — Synthetic Uptime</p>
+      <div class="explainer" data-glean-id="how-uptime">
+        <strong>Uptime checks = endpoints × locations × protocols.</strong> e.g. 20 endpoints × 2 locations × 1 protocol = 40 uptime checks. Each private probe you deploy counts as an additional location, so private probes are added to the location count before multiplying.
+      </div>
+      <div class="row2">
+        <div class="field"><label class="field-label" for="i-endpoints">Endpoints / URLs</label><p class="field-hint">Distinct targets to monitor.</p><input type="number" id="i-endpoints" min="0" value="20"></div>
+        <div class="field"><label class="field-label" for="i-protocols">Protocols per endpoint</label><p class="field-hint">e.g. HTTP(S), TCP, ICMP, DNS.</p><input type="number" id="i-protocols" min="0" value="1"></div>
+      </div>
+      <div class="field"><label class="field-label" for="i-locations">Public probe locations</label><p class="field-hint">SolarWinds cloud test locations.</p><input type="number" id="i-locations" min="0" value="2"></div>
+      <div class="field checkbox-field">
+        <label class="check"><input type="checkbox" id="i-usepp"> <span>Use private probes</span></label>
+        <p class="field-hint">Agent-based probes hosted inside the customer network for internal endpoints.</p>
+      </div>
+      <div class="field" id="pp-wrap" style="display:none">
+        <label class="field-label" for="i-pp">Number of private probes</label>
+        <p class="field-hint">Added to location count. Each probe is a customer-hosted test location.</p>
+        <input type="number" id="i-pp" min="0" value="0">
+      </div>
+      <div class="explainer" id="uptime-preview" style="border-color:var(--artifact-primary-brand)"></div>
+
+      <p class="sub-head">Digital Experience — Transactions &amp; RUM</p>
+      <div class="field"><label class="field-label" for="i-txn">Synthetic transactions</label><p class="field-hint">Scripted multi-step journeys. 2 / bundle (5 checks each).</p><input type="number" id="i-txn" min="0" value="0"></div>
+      <div class="field"><label class="field-label" for="i-rum">RUM pageviews / month</label><p class="field-hint">Bundles of 100,000 pageviews.</p><input type="number" id="i-rum" min="0" value="0"></div>
+
+      <p class="sub-head">Logs</p>
+      <div class="field"><label class="field-label" for="i-logs">Log ingest (GB / day)</label><p class="field-hint">Priced per GB/day; org ceiling ≈ 200 GB/hr.</p><input type="number" id="i-logs" min="0" value="0"></div>
+    </div>
+
+    <!-- OUTPUTS -->
+    <div data-glean-id="outputs">
+      <div class="result-hero">
+        <div class="out-label">Network &amp; Infrastructure entitlements
+          <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Weighted network + infrastructure entitlements — the primary SWO SaaS sizing metric. Per-module quantities are broken out below.</span></span>
+        </div>
+        <div class="metric" id="o-total">—</div>
+        <span class="badge">Quantity estimate · confirm in CPQ</span>
+      </div>
+      <div class="grid-out">
+        <div class="out-card">
+          <div class="out-label">Network &amp; Infrastructure
+            <span class="info" tabindex="0"><span class="ico">i</span><span class="tip">Weighted entitlements: network devices + APs÷10; hosts + hypervisors + VMs÷3 + cloud÷3 + containers÷10 + storage.</span></span>
+          </div>
+          <div class="out-value" id="o-nico">—</div>
+          <div class="note" id="o-nico-note"></div>
+        </div>
+        <div class="out-card">
+          <div class="out-label">Applications &amp; Databases</div>
+          <div class="out-value" id="o-appdb">—</div>
+          <div class="note" id="o-appdb-note"></div>
+        </div>
+        <div class="out-card">
+          <div class="out-label">Digital Experience</div>
+          <div class="out-value" id="o-dem">—</div>
+          <div class="note" id="o-dem-note"></div>
+        </div>
+        <div class="out-card">
+          <div class="out-label">Logs</div>
+          <div class="out-value" id="o-logs">—</div>
+          <div class="note" id="o-logs-note"></div>
+        </div>
+      </div>
+      <div id="o-flags"></div>
+    </div>
+  </div>
+
+  <!-- LICENSE SUMMARY -->
+  <div class="block" data-glean-id="license-summary">
+    <p class="section-tag">Licensing</p>
+    <h2>Module license summary</h2>
+    <p class="note">Licensable quantities for active modules only. Confirm all quantities in CPQ.</p>
+    <table>
+      <thead><tr><th>Module</th><th>Unit of measure</th><th>Quantity</th></tr></thead>
+      <tbody id="lic-body"></tbody>
+    </table>
+  </div>
+
+  <!-- COLLECTOR / AGENT SIZING -->
+  <div class="block" data-glean-id="hardware">
+    <p class="section-tag">Customer-side sizing</p>
+    <h2>Collectors &amp; agents — Minimum vs Recommended</h2>
+    <p class="note" id="hw-summary"></p>
+    <div class="hw-grid">
+      <div class="hw-card">
+        <h3>1 · Minimum</h3>
+        <p class="cap">Documented minimum collector spec</p>
+        <table><thead><tr><th>Component</th><th>Qty</th><th>CPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody id="hw-min"></tbody></table>
+      </div>
+      <div class="hw-card">
+        <h3>2 · Recommended</h3>
+        <p class="cap">Recommended spec + HA / redundancy</p>
+        <table><thead><tr><th>Component</th><th>Qty</th><th>CPU</th><th>RAM</th><th>Storage</th></tr></thead><tbody id="hw-rec"></tbody></table>
+      </div>
+    </div>
+    <p class="note" id="hw-note" style="margin-top:14px"></p>
+  </div>
+
+  <!-- ENTITY WEIGHTING REFERENCE -->
+  <div class="block" data-glean-id="ratio-ref">
+    <p class="section-tag">Reference</p>
+    <h2>Entity weighting &amp; units of measure</h2>
+    <table>
+      <thead><tr><th>Module</th><th>Entity / unit</th><th>Counts as</th></tr></thead>
+      <tbody>
+        <tr><td>Network</td><td>Network device (router/switch/firewall)</td><td>1:1</td></tr>
+        <tr><td>Network</td><td>Wireless access point</td><td>10:1</td></tr>
+        <tr><td>Infrastructure</td><td>Host / server (agent or collector)</td><td>1:1</td></tr>
+        <tr><td>Infrastructure</td><td>Hypervisor / virtual host</td><td>1:1</td></tr>
+        <tr><td>Infrastructure</td><td>Standalone VM</td><td>3:1</td></tr>
+        <tr><td>Infrastructure</td><td>Cloud service (AWS/Azure, non-host)</td><td>3:1</td></tr>
+        <tr><td>Infrastructure</td><td>Kubernetes container</td><td>10:1</td></tr>
+        <tr><td>Infrastructure</td><td>Storage array</td><td>1:1</td></tr>
+        <tr><td>Infrastructure</td><td>ICMP-only status node</td><td>Free</td></tr>
+        <tr><td>APM</td><td>Application service (any # instances)</td><td>Per service</td></tr>
+        <tr><td>Database</td><td>Database instance</td><td>Per instance</td></tr>
+        <tr><td>DEM — Synthetic Uptime</td><td>Uptime check = endpoint × location × protocol</td><td>10 uptime checks / bundle</td></tr>
+        <tr><td>DEM — Synthetic Transactions</td><td>Scripted transaction (5 checks each)</td><td>2 transactions / bundle</td></tr>
+        <tr><td>DEM — RUM</td><td>Pageviews</td><td>Per 100,000 / month</td></tr>
+        <tr><td>Logs</td><td>Log ingestion</td><td>Per GB (monthly plan)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ASSUMPTIONS -->
+  <div class="block assump" data-glean-id="assumptions">
+    <h2>How this is calculated</h2>
+    <ul>
+      <li>SolarWinds Observability SaaS uses an à-la-carte, modular subscription: each capability area is licensed independently by active entities or consumption measured in the previous calendar day.</li>
+      <li><strong>Network &amp; Infrastructure (NICO)</strong> is priced by active network devices and infrastructure hosts. Weighting: network device / hypervisor / host / storage array 1:1; wireless AP &amp; container 10:1; standalone VM &amp; cloud service 3:1. When one device is monitored via multiple channels it counts once; ICMP-only status nodes are free.</li>
+      <li><strong>APM</strong> is per active service (independent of the number of running instances). <strong>Database</strong> is per active instance. <strong>RUM</strong> is per 100,000 pageviews/month. <strong>Synthetics</strong> is licensed in bundles of 10 checks — a bundle holds either 10 uptime checks or 2 scripted transactions. <strong>Uptime checks are derived as endpoints × locations × protocols</strong> (e.g. 20 endpoints × 2 locations × 1 protocol = 40 uptime checks); when private probes are used, each private probe adds to the location count before multiplying. <strong>Logs</strong> is a monthly plan measured per GB ingested.</li>
+      <li><strong>No customer backend to size</strong> — storage, processing, and the web application are hosted by SolarWinds. Customer-side sizing covers only collectors and agents: the Network Collector (≤7,000 standard devices each; min 4 CPU/16 GB, rec 8 CPU/32 GB, 40 GB + SQL), the lightweight per-host SolarWinds Observability Agent (OTLP 443, no central server), the SWO K8s Collector for clusters, and optional dedicated flow collectors (≤40,000 flows/sec each). APM libraries and RUM run in-app; synthetics use SolarWinds public probes (or optional agent-based private probes).</li>
+    </ul>
+    <details>
+      <summary>Sources</summary>
+      <ul style="margin-top:12px">
+        <li><a href="https://documentation.solarwinds.com/en/success_center/observability/content/settings/subscription.htm">SWO SaaS Subscription &amp; usage calculation</a> — per-module metering and entity weighting ratios.</li>
+        <li><a href="https://documentation.solarwinds.com/en/success_center/observability/content/system_requirements/network_requirements.htm">Network monitoring system requirements</a> — Network Collector CPU/RAM/storage and 7,000-device scalability.</li>
+        <li><a href="https://documentation.solarwinds.com/en/success_center/observability/content/system_requirements/host_requirements.htm">Self-managed host requirements</a> — per-host SolarWinds Observability Agent.</li>
+        <li><a href="https://documentation.solarwinds.com/en/success_center/observability/content/configure/install-network-collector.htm">Network Collector</a> — deploy multiple collectors; dedicated collector for heavy flow.</li>
+      </ul>
+    </details>
+  </div>
+
+  <p class="foot-note">Indicative SE quantity-sizing estimate for SolarWinds Observability SaaS. Entity weighting, module tiering, and collector counts must be validated in CPQ and against current SolarWinds Observability SaaS system-requirements and subscription documentation before quoting.</p>
+</div>
+
+<script>
+var DEVICES_PER_COLLECTOR=7000, FLOWS_PER_COLLECTOR=40000;
+var NC_MIN={c:'4',r:16,d:'40 GB + SQL Express'};
+var NC_REC={c:'8',r:32,d:'40 GB + dedicated SQL'};
+var FLOW_REC={c:'8',r:32,d:'non-Express SQL'};
+var AGENT={c:'<1',r:'~0.2',d:'on-host'};
+var K8S={c:'~1',r:'~2',d:'in-cluster pods'};
+
+function fmt(n){return Math.round(n).toLocaleString('en-US');}
+function fmt1(n){return (Math.round(n*10)/10).toLocaleString('en-US');}
+function val(id){var el=document.getElementById(id);return el?parseFloat(el.value)||0:0;}
+function row(name,qty,spec,note){if(qty<=0)return '';return '<tr><td>'+name+(note?' <span style="color:var(--artifact-text-secondary)">'+note+'</span>':'')+'</td><td>'+qty+'</td><td>'+spec.c+'</td><td>'+spec.r+' GB</td><td>'+spec.d+'</td></tr>';}
+function empty(){return '<tr><td colspan="5" style="color:var(--artifact-text-secondary)">No collectors/agents required for the current scope</td></tr>';}
+
+function calc(){
+  var netdev=val('i-netdev'), aps=val('i-aps');
+  var hosts=val('i-hosts'), hv=val('i-hv'), vms=val('i-vms'), cloud=val('i-cloud'), cont=val('i-containers'), storage=val('i-storage');
+  var flows=val('i-flows');
+  var apm=val('i-apm'), db=val('i-db');
+
+  // --- Synthetic uptime: endpoints x locations x protocols (private probes add as locations) ---
+  var endpoints=val('i-endpoints'), protocols=val('i-protocols'), locations=val('i-locations');
+  var usePP=document.getElementById('i-usepp').checked;
+  document.getElementById('pp-wrap').style.display=usePP?'block':'none';
+  var pp=usePP?val('i-pp'):0;
+  var totalLoc=locations+pp;
+  var uptime=Math.round(endpoints*totalLoc*protocols);
+  var txn=val('i-txn'), rum=val('i-rum'), logs=val('i-logs');
+
+  // live preview of the uptime formula
+  var prev=fmt(endpoints)+' endpoints × '+fmt(totalLoc)+' location'+(totalLoc===1?'':'s');
+  if(usePP&&pp>0) prev+=' ('+fmt(locations)+' public + '+fmt(pp)+' private probe'+(pp===1?'':'s')+')';
+  prev+=' × '+fmt(protocols)+' protocol'+(protocols===1?'':'s')+' = <strong>'+fmt(uptime)+' uptime checks</strong>';
+  document.getElementById('uptime-preview').innerHTML=prev;
+
+  var netRaw=netdev + aps/10;
+  var netQty=Math.ceil(netRaw);
+  var infraRaw=hosts + hv + vms/3 + cloud/3 + cont/10 + storage;
+  var infraQty=Math.ceil(infraRaw);
+  var synBundles=(uptime+txn)>0?Math.ceil((uptime + 5*txn)/10):0;
+  var rumBundles=rum>0?Math.ceil(rum/100000):0;
+
+  // Hero: primary Network + Infrastructure entitlements
+  document.getElementById('o-total').innerHTML=fmt(netQty+infraQty)+' <small>entitlements</small>';
+
+  document.getElementById('o-nico').innerHTML=fmt(netQty+infraQty)+' <small>entitlements</small>';
+  document.getElementById('o-nico-note').textContent=fmt(netQty)+' network · '+fmt(infraQty)+' infrastructure';
+
+  document.getElementById('o-appdb').innerHTML=fmt(apm+db)+' <small>entities</small>';
+  document.getElementById('o-appdb-note').textContent=fmt(apm)+' APM services · '+fmt(db)+' DB instances';
+
+  document.getElementById('o-dem').innerHTML=fmt(synBundles+rumBundles)+' <small>bundles</small>';
+  document.getElementById('o-dem-note').textContent=fmt(uptime)+' uptime + '+fmt(txn)+' txn ('+fmt(synBundles)+' bundle'+(synBundles===1?'':'s')+') · '+fmt(rumBundles)+' RUM (100K)';
+
+  document.getElementById('o-logs').innerHTML=(logs>0?fmt1(logs):'0')+' <small>GB/day</small>';
+  document.getElementById('o-logs-note').textContent=logs>0?'Monthly log plan':'No log plan';
+
+  // License summary rows (quantity only)
+  var rows=[
+    ['Network Observability','Network entity (IP)',fmt1(netQty), netdev>0||aps>0],
+    ['Infrastructure Observability','Infrastructure host',fmt1(infraQty), (hosts+hv+vms+cloud+cont+storage)>0],
+    ['Application Observability (APM)','Application service',fmt1(apm), apm>0],
+    ['Database Observability','Database instance',fmt1(db), db>0],
+    ['Digital Experience — Synthetics','Bundle of 10 checks',fmt1(synBundles)+' <span style="color:var(--artifact-text-secondary)">('+fmt(uptime)+' uptime + '+fmt(txn)+' txn)</span>', synBundles>0],
+    ['Digital Experience — RUM','100,000 pageviews/mo',fmt1(rumBundles), rumBundles>0],
+    ['Log Observability','GB / day ingest',fmt1(logs), logs>0]
+  ];
+  var html='';
+  rows.forEach(function(r){ if(r[3]){ html+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td></tr>'; } });
+  if(!html) html='<tr><td colspan="3" style="color:var(--artifact-text-secondary)">Enter monitoring scope to build the estimate</td></tr>';
+  document.getElementById('lic-body').innerHTML=html;
+
+  // Collectors & agents
+  var collectors=netdev>0?Math.max(1,Math.ceil(netdev/DEVICES_PER_COLLECTOR)):0;
+  var flowColl=flows>0?Math.max(1,Math.ceil(flows/FLOWS_PER_COLLECTOR)):0;
+  var agents=hosts+db;
+  var k8s=cont>0?1:0;
+  var ppColl=usePP?pp:0;
+
+  document.getElementById('hw-summary').textContent='SaaS backend is fully hosted by SolarWinds. Customer-side footprint: '+collectors+' Network Collector'+(collectors===1?'':'s')+', '+agents+' agent'+(agents===1?'':'s')+(k8s?' + K8s collector':'')+(flowColl?' + '+flowColl+' flow collector'+(flowColl===1?'':'s'):'')+(ppColl?' + '+ppColl+' private probe'+(ppColl===1?'':'s'):'')+'.';
+
+  var mn='';
+  mn+=row('Network Collector',collectors,NC_MIN,'≤7,000 devices each');
+  mn+=row('Observability Agent',agents,AGENT,'per host / DB · OTLP 443');
+  mn+=row('SWO K8s Collector',k8s,K8S,'per cluster');
+  mn+=row('Private Synthetic Probe',ppColl,AGENT,'agent-based, in-network');
+  document.getElementById('hw-min').innerHTML=mn||empty();
+
+  var rc='';
+  rc+=row('Network Collector',collectors>0?collectors+1:0,NC_REC,'+1 standby (HA)');
+  if(flowColl>0) rc+=row('Dedicated Flow Collector',flowColl,FLOW_REC,'≤40,000 flows/sec each');
+  rc+=row('Observability Agent',agents,AGENT,'per host / DB · OTLP 443');
+  rc+=row('SWO K8s Collector',k8s,K8S,'per cluster');
+  rc+=row('Private Synthetic Probe',ppColl,AGENT,'agent-based, in-network');
+  document.getElementById('hw-rec').innerHTML=rc||empty();
+
+  document.getElementById('hw-note').innerHTML='Network Collector runs on Windows Server (min 4 cores / 16 GB, rec 8 cores / 32 GB, 40 GB + SQL). Each collector monitors up to 7,000 standard devices — deploy one per site or add collectors to scale. The Observability Agent is lightweight and runs on each monitored host/DB (no central server). APM libraries and RUM run in-app; synthetic uptime checks use SolarWinds public probe locations, with optional agent-based private probes for internal endpoints — each private probe counts as an additional test location.';
+
+  // Flags
+  var flags=[];
+  flags.push({t:'pos',m:'SaaS backend (storage, processing, web app) is hosted by SolarWinds — no servers, databases, or polling engines to size on-prem.'});
+  if(netdev>DEVICES_PER_COLLECTOR)flags.push({t:'warn',m:'More than 7,000 network devices — multiple Network Collectors required ('+collectors+' estimated). Deploy one per site where possible.'});
+  if(flows>0)flags.push({t:'warn',m:'Flow monitoring at scale — use a dedicated Network Collector with a non-Express SQL tier for flow data.'});
+  if(usePP&&pp>0)flags.push({t:'warn',m:pp+' private probe'+(pp===1?'':'s')+' added as location'+(pp===1?'':'s')+'. Private probes run as agents inside the customer network and are billed as uptime checks like any other location.'});
+  if(logs>0)flags.push({t:'warn',m:'Log ingestion is capped at ~200 GB/hour per organization regardless of plan; use exclusion filters for high-volume, low-value sources.'});
+  document.getElementById('o-flags').innerHTML=flags.map(function(f){return '<div class="flag '+f.t+'">'+f.m+'</div>';}).join('');
+}
+
+['i-netdev','i-aps','i-hosts','i-hv','i-vms','i-cloud','i-containers','i-storage','i-flows','i-apm','i-db','i-endpoints','i-protocols','i-locations','i-pp','i-txn','i-rum','i-logs'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.addEventListener('input',calc);el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();calc();}});});
+document.getElementById('i-usepp').addEventListener('change',calc);
+calc();
+
+window.GleanBridge&&window.GleanBridge.postMessage({actionId:'export-pdf',type:'glean-add-menu',metadata:{label:'Export as PDF',icon:'export'}});
+window.GleanBridge&&window.GleanBridge.onMessage('action',function(data){if(data.actionId==='export-pdf')window.print();});
+</script>
+</body>
+</html>
